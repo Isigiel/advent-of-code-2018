@@ -1,0 +1,58 @@
+<h2>Day 1</h2>
+Look at the
+<a href="https://adventofcode.com/2018/day/1">original challenge</a> <br />
+enter your challenge input here, I've added the demo to get started.
+<mat-form-field>
+  <textarea
+    matInput
+    placeholder="Your challenge input"
+    [formControl]="challengeCtrl"
+  ></textarea>
+</mat-form-field>
+
+<button
+  mat-stroked-button
+  (click)="loadChallenge()"
+  [disabled]="working"
+  color="accent"
+>
+  Load actual challenge
+</button>
+
+<button
+  mat-stroked-button
+  (click)="startAlgorithm()"
+  [disabled]="challengeCtrl.invalid || working"
+>
+  Start solution
+</button>
+
+<div fxLayout="column">
+  <p *ngIf="currentStep >= 1">Start - parse input</p>
+  <p *ngIf="currentStep >= 2">Working - apply every operation</p>
+  <p *ngIf="currentStep >= 3">
+    Done - All operations applied, final result ready
+  </p>
+  <h1 class="mat-display-2">
+    Current Frequency: {{ currentRes > 0 ? '+' : '' }}{{ currentRes }}
+  </h1>
+  <div fxLayout="row" class="op-list" fxLayoutGap="5px">
+    <span class="op" *ngFor="let op of (ops | async); trackBy: id"
+      >{{ op > 0 ? '+' : '' }}{{ op }}</span
+    >
+  </div>
+  <p *ngIf="currentStep >= 3">
+    Ready for the next challenge?
+    <button
+      mat-stroked-button
+      [disabled]="working2"
+      (click)="continueAlgorithm()"
+    >
+      Get started
+    </button>
+  </p>
+  <p *ngIf="currentStep >= 4">
+    Working - Apply operations until frequency repeats
+  </p>
+  <p *ngIf="currentStep >= 5">Done - Double detected, application stopped</p>
+</div>
