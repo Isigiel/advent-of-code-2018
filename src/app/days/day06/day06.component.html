@@ -12,6 +12,15 @@ enter your challenge input here, I've added the demo to get started.
 
 <button
   mat-stroked-button
+  (click)="loadChallenge()"
+  [disabled]="working"
+  color="accent"
+>
+  Load actual challenge
+</button>
+
+<button
+  mat-stroked-button
   (click)="startAlgorithm()"
   [disabled]="challengeInput.invalid || working"
 >
@@ -19,7 +28,6 @@ enter your challenge input here, I've added the demo to get started.
 </button>
 
 <div fxLayout="row" fxLayoutGap="1rem">
-  <canvas fxFlex #canvas></canvas>
   <div fxFlex="400px" fxLayout="column" class="mat-typography">
     <p *ngIf="currentStep >= 1">Step 1 - set up the grid of data we got</p>
     <p *ngIf="currentStep >= 2">
@@ -59,4 +67,5 @@ enter your challenge input here, I've added the demo to get started.
       Part 2 done - There are {{ winner2 }} safe points
     </p>
   </div>
+  <div fxFlex><canvas style="width: 100%;height: 100%;" #canvas></canvas></div>
 </div>
