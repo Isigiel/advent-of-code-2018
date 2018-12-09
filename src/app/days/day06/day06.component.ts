@@ -15,12 +15,15 @@ export class Day06Component implements OnInit {
     '1, 1\n1, 6\n8, 3\n3, 4\n5, 5\n8, 9',
     Validators.required
   );
+  distanceInput = new FormControl('32', Validators.required);
   currentStep = 0;
   grid$: Observable<{ id: string; mark: Marker }[][]>;
   point$: Observable<Point>;
   pointGrid: PointGrid;
   working = false;
+  working2 = false;
   winner;
+  winner2;
   @ViewChild('canvas') canvas: ElementRef;
 
   constructor() {}
@@ -29,6 +32,7 @@ export class Day06Component implements OnInit {
 
   async startAlgorithm() {
     this.working = true;
+    this.challengeInput.disable();
     const rows = this.challengeInput.value
       .split('\n')
       .map(p => p.trim())
@@ -61,33 +65,17 @@ export class Day06Component implements OnInit {
     this.currentStep = 5;
   }
 
-  joiner(index, row) {
-    return row.join();
-  }
-
-  id(index, cell) {
-    return cell.id + cell.mark;
-  }
-
-  classes(cell: { id: string; mark: Marker }) {
-    return {
-      isIgnored: cell.mark === Marker.Ignore,
-      isDiscarded: cell.mark === Marker.Discard,
-      isSolution: cell.mark === Marker.Solution
-    };
-  }
-
-  private getMarker(mark: Marker): string {
-    switch (mark) {
-      case Marker.Ignore:
-        return '.';
-      case Marker.Discard:
-        return 'x';
-      case Marker.Solution:
-        return 'S';
-      default:
-        return '-';
-    }
+  async continueAlgorithm() {
+    this.working2 = true;
+    this.distanceInput.disable();
+    this.currentStep = 6;
+    await this.pointGrid.resetMarkers().toPromise();
+    this.currentStep = 7;
+    const safePoints = await this.pointGrid
+      .findSafePoints(this.distanceInput.value)
+      .toPromise();
+    this.currentStep = 8;
+    this.winner2 = safePoints.length;
   }
 
   private setupDisplay() {
@@ -130,6 +118,14 @@ export class Day06Component implements OnInit {
           //   pointHeight);
           ctx.fillText('X', point.x * pointWidth, point.y * pointHeight);
           break;
+        case Marker.Safe:
+          ctx.fillStyle = point.id;
+          // ctx.fillRect((point.x) * pointWidth,
+          //   (point.y) * pointHeight,
+          //   pointWidth,
+          //   pointHeight);
+          ctx.fillText('#', point.x * pointWidth, point.y * pointHeight);
+          break;
         case Marker.Solution:
           ctx.fillStyle = point.id;
           /*ctx.fillRect((point.x) * pointWidth + 1,
@@ -165,7 +161,6 @@ export class Day06Component implements OnInit {
   }
 
   private rainbow(numOfSteps, step) {
-    // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating easily distinguishable vibrant markers in Google Maps and other apps.
     // Adam Cole, 2011-Sept-14
     // HSV to RBG adapted from: http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
     /* tslint:disable:no-bitwise */

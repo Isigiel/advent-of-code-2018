@@ -92,7 +92,7 @@ export class PointGrid {
         );
       } else {
         this.addPoint(
-          new Point(pointX.toString(), pointY.toString(), '.', Marker.Ignore)
+          new Point(pointX.toString(), pointY.toString(), 'grey', Marker.Ignore)
         );
       }
     });
@@ -115,6 +115,7 @@ export class PointGrid {
           return;
         }
         point.mark = Marker.Discard;
+        point.starting = false;
         this._discarded.add(point.id);
         this.addPoint(point);
       } else if (index >= edgeLength - width) {
@@ -123,6 +124,7 @@ export class PointGrid {
           return;
         }
         point.mark = Marker.Discard;
+        point.starting = false;
         this._discarded.add(point.id);
         this.addPoint(point);
       } else {
@@ -134,6 +136,7 @@ export class PointGrid {
           return;
         }
         point.mark = Marker.Discard;
+        point.starting = false;
         this._discarded.add(point.id);
         this.addPoint(point);
       }
@@ -169,10 +172,46 @@ export class PointGrid {
       const point = this._grid.value[pointY][pointX];
       if (point.id === winningId) {
         point.mark = Marker.Solution;
+        point.starting = false;
         setTimeout(() => this.addPoint(point));
       }
     });
     return counter2.pipe(mapTo({ biggestArea, winningId }));
+  }
+
+  resetMarkers() {
+    const finder = range(0, this.height).pipe(
+      switchMap(y => range(0, this.width).pipe(map(x => [x, y]))),
+      share()
+    );
+    finder.subscribe(([x, y]) => {
+      const point = this._grid.value[y][x];
+      point.mark = Marker.None;
+      point.starting = false;
+      this.addPoint(point);
+    });
+    return finder;
+  }
+
+  findSafePoints(maxDistance: number) {
+    const safePoints = [];
+    const finder = range(0, this.height).pipe(
+      switchMap(y => range(0, this.width).pipe(map(x => [x, y]))),
+      share()
+    );
+    finder.subscribe(([x, y]) => {
+      const point = this._grid.value[y][x];
+      const distance = this._points.reduce((previousValue, currentValue) => {
+        return previousValue + this.manhattan(x, y, currentValue);
+      }, 0);
+      if (distance < maxDistance) {
+        point.mark = Marker.Safe;
+        point.starting = false;
+        safePoints.push(point);
+        setTimeout(() => this.addPoint(point));
+      }
+    });
+    return finder.pipe(mapTo(safePoints));
   }
 
   private transformGrid(grid: {

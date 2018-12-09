@@ -1,7 +1,6 @@
 export class Point {
   private readonly _x: number;
   private readonly _y: number;
-  private readonly _starting: boolean;
 
   constructor(
     x: string,
@@ -19,6 +18,16 @@ export class Point {
     this._starting = starting;
   }
 
+  private _starting: boolean;
+
+  get starting(): boolean {
+    return this._starting;
+  }
+
+  set starting(value: boolean) {
+    this._starting = value;
+  }
+
   private _mark: Marker;
 
   get mark(): Marker {
@@ -27,10 +36,6 @@ export class Point {
 
   set mark(value: Marker) {
     this._mark = value;
-  }
-
-  get starting(): boolean {
-    return this._starting;
   }
 
   get x(): number {
@@ -52,5 +57,6 @@ export enum Marker {
   None,
   Discard,
   Solution,
-  Ignore
+  Ignore,
+  Safe
 }

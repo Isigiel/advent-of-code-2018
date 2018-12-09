@@ -20,7 +20,7 @@ enter your challenge input here, I've added the demo to get started.
 
 <div fxLayout="row" fxLayoutGap="1rem">
   <canvas fxFlex #canvas></canvas>
-  <div fxFlex="300px" fxLayout="column" class="mat-typography">
+  <div fxFlex="400px" fxLayout="column" class="mat-typography">
     <p *ngIf="currentStep >= 1">Step 1 - set up the grid of data we got</p>
     <p *ngIf="currentStep >= 2">
       Step 2 - find the nearest point in every point
@@ -28,8 +28,35 @@ enter your challenge input here, I've added the demo to get started.
     <p *ngIf="currentStep >= 3">Step 3 - mark infinite areas (on the edge)</p>
     <p *ngIf="currentStep >= 4">Step 4 - Find biggest, not marked, area</p>
     <p *ngIf="currentStep >= 5">
-      Done - {{ winner.winningId }} is the biggest area, with
+      Done - The <span [style.color]="winner.winningId">biggest area</span> has
       {{ winner.biggestArea }} points in it
+    </p>
+    <p *ngIf="currentStep >= 5">
+      To continue with part 2 please enter the maximum distance
+      <mat-form-field>
+        <input
+          matInput
+          placeholder="Maximum distance"
+          [formControl]="distanceInput"
+          type="number"
+        />
+      </mat-form-field>
+      <button
+        mat-stroked-button
+        (click)="continueAlgorithm()"
+        [disabled]="distanceInput.invalid || working2"
+      >
+        Continue Challenge
+      </button>
+    </p>
+    <p *ngIf="currentStep >= 6">
+      Starting - Reset the indicators from the last challenge
+    </p>
+    <p *ngIf="currentStep >= 7">
+      Step 7 - Sum up the distances for every point on the grid
+    </p>
+    <p *ngIf="currentStep >= 8">
+      Part 2 done - There are {{ winner2 }} safe points
     </p>
   </div>
 </div>
