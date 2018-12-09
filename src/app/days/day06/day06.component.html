@@ -1,0 +1,35 @@
+<h2>Day 6</h2>
+Look at the
+<a href="https://adventofcode.com/2018/day/6">original challenge</a> <br />
+enter your challenge input here, I've added the demo to get started.
+<mat-form-field>
+  <textarea
+    matInput
+    placeholder="Your challenge input"
+    [formControl]="challengeInput"
+  ></textarea>
+</mat-form-field>
+
+<button
+  mat-stroked-button
+  (click)="startAlgorithm()"
+  [disabled]="challengeInput.invalid || working"
+>
+  Start solution
+</button>
+
+<div fxLayout="row" fxLayoutGap="1rem">
+  <canvas fxFlex #canvas></canvas>
+  <div fxFlex="300px" fxLayout="column" class="mat-typography">
+    <p *ngIf="currentStep >= 1">Step 1 - set up the grid of data we got</p>
+    <p *ngIf="currentStep >= 2">
+      Step 2 - find the nearest point in every point
+    </p>
+    <p *ngIf="currentStep >= 3">Step 3 - mark infinite areas (on the edge)</p>
+    <p *ngIf="currentStep >= 4">Step 4 - Find biggest, not marked, area</p>
+    <p *ngIf="currentStep >= 5">
+      Done - {{ winner.winningId }} is the biggest area, with
+      {{ winner.biggestArea }} points in it
+    </p>
+  </div>
+</div>
